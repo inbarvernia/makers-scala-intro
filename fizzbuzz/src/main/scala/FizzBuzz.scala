@@ -7,7 +7,7 @@ object FizzBuzz {
 
     val fizzedNums: ArrayBuffer[String] = nums.map(fizzBuzzify)
 
-    val result = fizzedNums.mkString(", ")
+    val result = convertListToString(fizzedNums)
 
     return result;
   }
@@ -23,5 +23,9 @@ object FizzBuzz {
 
   def fizzBuzzify(num: Int): String = {
     if (num % 15 == 0) "FizzBuzz" else if (num % 3 == 0) "Fizz" else if (num % 5 == 0) "Buzz" else num.toString()
+  }
+
+  def convertListToString(arr: ArrayBuffer[String]): String = {
+    arr.mkString(", ")
   }
 }
