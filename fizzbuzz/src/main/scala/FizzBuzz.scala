@@ -3,8 +3,6 @@ import scala.collection.mutable.ArrayBuffer
 object FizzBuzz {
   def generate(number: Int): String = {
 
-    if (number == 1) "1"
-
     val nums = ArrayBuffer[Int]()
 
     for (i <- 1 to number) {
