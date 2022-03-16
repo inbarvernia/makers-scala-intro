@@ -9,7 +9,7 @@ object FizzBuzz {
       nums += i
     }
 
-    val fizzedNums: ArrayBuffer[String] = nums.map(num => if (num % 3 == 0) "Fizz" else if (num == 5) "Buzz" else num.toString())
+    val fizzedNums: ArrayBuffer[String] = nums.map(num => if (num % 3 == 0) "Fizz" else if (num % 5 == 0) "Buzz" else num.toString())
 
     val result = fizzedNums.mkString(", ")
 
