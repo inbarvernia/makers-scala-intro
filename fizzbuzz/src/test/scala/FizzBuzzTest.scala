@@ -1,4 +1,4 @@
-import org.scalatest.funcuite.AnyFunSuite
+import org.scalatest.funsuite.AnyFunSuite
 
 class FizzBuzzTest extends AnyFunSuite {
   test("lists the numbers up to one") {
