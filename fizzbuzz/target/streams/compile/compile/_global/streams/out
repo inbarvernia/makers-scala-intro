@@ -1,6 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0mC:\Users\harpo\Projects\makers-scala-training\fizzbuzz\src\main\scala\FizzBuzz.scala:6:40: polymorphic expression cannot be instantiated to expected type;[0m
-[0m[[0m[31merror[0m] [0m[0m found   : [T]Array[T][0m
-[0m[[0m[31merror[0m] [0m[0m required: scala.collection.mutable.ArrayBuffer[Int][0m
-[0m[[0m[31merror[0m] [0m[0m    var nums : ArrayBuffer[Int] = Array()[0m
-[0m[[0m[31merror[0m] [0m[0m                                       ^[0m
-[0m[[0m[31merror[0m] [0m[0mone error found[0m
