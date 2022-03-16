@@ -9,7 +9,7 @@ object FizzBuzz {
       nums += i.toString()
     }
 
-    val fizzedNums = nums.map(num => {if (num == "3") "Fizz" else num})
+    val fizzedNums = nums.map(num => if (num == "3") "Fizz" else if (num == "5") "Buzz" else num)
 
     val result = fizzedNums.mkString(", ")
 
