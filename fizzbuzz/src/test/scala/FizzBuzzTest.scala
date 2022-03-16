@@ -16,4 +16,8 @@ class FizzBuzzTest extends AnyFunSuite {
   test("replaces five with Buzz") {
     assert(FizzBuzz.generate(5) === "1, 2, Fizz, 4, Buzz")
   }
+
+  test("replaces multiples of three with Fizz") {
+    assert(FizzBuzz.generate(6) === "1, 2, Fizz, 4, Buzz, Fizz")
+  }
 }
