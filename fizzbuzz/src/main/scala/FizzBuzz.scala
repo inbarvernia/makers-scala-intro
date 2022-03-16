@@ -3,13 +3,15 @@ import scala.collection.mutable.ArrayBuffer
 object FizzBuzz {
   def generate(number: Int): String = {
 
-    val nums = ArrayBuffer[Int](1)
+    val nums = ArrayBuffer[String]("1")
 
     for (i <- 2 to number) {
-      nums += i
+      nums += i.toString()
     }
 
-    val result = nums.mkString(", ")
+    val fizzedNums = nums.map(num => {if (num == "3") "Fizz" else num})
+
+    val result = fizzedNums.mkString(", ")
 
     return result;
   }
