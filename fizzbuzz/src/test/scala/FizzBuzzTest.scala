@@ -8,4 +8,8 @@ class FizzBuzzTest extends AnyFunSuite {
   test("lists the numbers up to two") {
     assert(FizzBuzz.generate(2) === "1, 2")
   }
+
+  test("replaces three with Fizz") {
+    assert(FizzBuzz.generate(3) === "1, 2, Fizz")
+  }
 }
