@@ -1,7 +1,7 @@
 import scala.collection.mutable.ArrayBuffer
 
 object FizzBuzz {
-  def generate(number: Int): String = {
+  val generate = (number: Int) => {
 
     (createIntArrayUpToNumber andThen mapToFizzBuzz andThen convertListToString)(number)
   }
