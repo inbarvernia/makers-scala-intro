@@ -2,16 +2,6 @@ class Agenda (val meetings: List[Meeting]) {
 
   def printDaySchedule(day: String): Unit = {
     val meetingsForTheDay = meetings.filter(_.day == day)
-    val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
-    val sortByMeetingTime = (meetings: List[Meeting]) => meetings.sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
-    val filterByTimeOfDay = (meetings: List[Meeting], time: String) => meetings.filter(_.time.takeRight(2) == time)
-    val printByTimeOfDay = (meetings: List[Meeting]) => {
-      val timeOfDay = if (meetings(0).time.takeRight(2) == "am") "morning" else "afternoon"
-      if (meetings.length >= 1) {
-        println(s"${meetings(0).day} $timeOfDay:")
-      }
-      for (meeting <- sortByMeetingTime(meetings)) println(s"  ${meeting.time}: ${meeting.name}")
-    }
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
@@ -21,6 +11,16 @@ class Agenda (val meetings: List[Meeting]) {
       printByTimeOfDay(afternoonMeetings)
     }
 
+  }
+  val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
+  val sortByMeetingTime = (meetings: List[Meeting]) => meetings.sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
+  val filterByTimeOfDay = (meetings: List[Meeting], time: String) => meetings.filter(_.time.takeRight(2) == time)
+  val printByTimeOfDay = (meetings: List[Meeting]) => {
+    val timeOfDay = if (meetings(0).time.takeRight(2) == "am") "morning" else "afternoon"
+    if (meetings.length >= 1) {
+      println(s"${meetings(0).day} $timeOfDay:")
+    }
+    for (meeting <- sortByMeetingTime(meetings)) println(s"  ${meeting.time}: ${meeting.name}")
   }
 
 }
