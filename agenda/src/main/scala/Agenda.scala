@@ -5,8 +5,16 @@ class Agenda (val meetings: List[Meeting]) {
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
-      println(s"$day:")
-      for (meeting <- meetingsForTheDay) println(s"  ${meeting.time}: ${meeting.name}")
+      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am")
+      val afternoonMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "pm")
+      if (morningMeetings.length >= 1) {
+        println(s"$day morning:")
+        for (meeting <- morningMeetings) println(s"  ${meeting.time}: ${meeting.name}")
+      }
+      if (afternoonMeetings.length >= 1) {
+        println(s"$day afternoon:")
+        for (meeting <- afternoonMeetings) println(s"  ${meeting.time}: ${meeting.name}")
+      }
     }
   }
 
