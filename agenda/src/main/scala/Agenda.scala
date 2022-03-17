@@ -5,19 +5,20 @@ class Agenda (val meetings: List[Meeting]) {
     val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
     val sortByMeetingTime = (meetings: List[Meeting]) => meetings.sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
     val filterByTimeOfDay = (meetings: List[Meeting], time: String) => meetings.filter(_.time.takeRight(2) == time)
+    val printByTimeOfDay = (meetings: List[Meeting]) => {
+      val timeOfDay = if (meetings(0).time.takeRight(2) == "am") "morning" else "afternoon"
+      if (meetings.length >= 1) {
+        println(s"${meetings(0).day} $timeOfDay:")
+      }
+      for (meeting <- sortByMeetingTime(meetings)) println(s"  ${meeting.time}: ${meeting.name}")
+    }
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
       val morningMeetings = filterByTimeOfDay(meetingsForTheDay, "am")
       val afternoonMeetings = filterByTimeOfDay(meetingsForTheDay, "pm")
-      if (morningMeetings.length >= 1) {
-        println(s"$day morning:")
-        for (meeting <- sortByMeetingTime(morningMeetings)) println(s"  ${meeting.time}: ${meeting.name}")
-      }
-      if (afternoonMeetings.length >= 1) {
-        println(s"$day afternoon:")
-        for (meeting <- sortByMeetingTime(afternoonMeetings)) println(s"  ${meeting.time}: ${meeting.name}")
-      }
+      printByTimeOfDay(morningMeetings)
+      printByTimeOfDay(afternoonMeetings)
     }
 
   }
