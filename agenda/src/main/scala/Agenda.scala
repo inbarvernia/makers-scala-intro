@@ -3,18 +3,19 @@ class Agenda (val meetings: List[Meeting]) {
   def printDaySchedule(day: String): Unit = {
     val meetingsForTheDay = meetings.filter(_.day == day)
     val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
+    val sortByMeetingTime = (meetings: List[Meeting]) => meetings.sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
-      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am").sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
+      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am")
       val afternoonMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "pm")
       if (morningMeetings.length >= 1) {
         println(s"$day morning:")
-        for (meeting <- morningMeetings) println(s"  ${meeting.time}: ${meeting.name}")
+        for (meeting <- sortByMeetingTime(morningMeetings)) println(s"  ${meeting.time}: ${meeting.name}")
       }
       if (afternoonMeetings.length >= 1) {
         println(s"$day afternoon:")
-        for (meeting <- afternoonMeetings) println(s"  ${meeting.time}: ${meeting.name}")
+        for (meeting <- sortByMeetingTime(afternoonMeetings)) println(s"  ${meeting.time}: ${meeting.name}")
       }
     }
 
