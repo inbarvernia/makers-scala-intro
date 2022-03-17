@@ -2,10 +2,11 @@ class Agenda (val meetings: List[Meeting]) {
 
   def printDaySchedule(day: String): Unit = {
     val meetingsForTheDay = meetings.filter(_.day == day)
+    val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
-      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am").sortWith(_.time.dropRight(2).toInt < _.time.dropRight(2).toInt)
+      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am").sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
       val afternoonMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "pm")
       if (morningMeetings.length >= 1) {
         println(s"$day morning:")
@@ -16,6 +17,7 @@ class Agenda (val meetings: List[Meeting]) {
         for (meeting <- afternoonMeetings) println(s"  ${meeting.time}: ${meeting.name}")
       }
     }
+
   }
 
 }
