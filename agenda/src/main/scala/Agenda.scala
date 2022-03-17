@@ -4,11 +4,12 @@ class Agenda (val meetings: List[Meeting]) {
     val meetingsForTheDay = meetings.filter(_.day == day)
     val timeInt = (meeting: Meeting) => meeting.time.dropRight(2).toInt
     val sortByMeetingTime = (meetings: List[Meeting]) => meetings.sortWith((meet1, meet2) => timeInt(meet1) < timeInt(meet2))
+    val filterByTimeOfDay = (meetings: List[Meeting], time: String) => meetings.filter(_.time.takeRight(2) == time)
     if (meetingsForTheDay.length == 0) {
       println(s"There are no meeting on $day.")
     } else {
-      val morningMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "am")
-      val afternoonMeetings = meetingsForTheDay.filter(_.time.takeRight(2) == "pm")
+      val morningMeetings = filterByTimeOfDay(meetingsForTheDay, "am")
+      val afternoonMeetings = filterByTimeOfDay(meetingsForTheDay, "pm")
       if (morningMeetings.length >= 1) {
         println(s"$day morning:")
         for (meeting <- sortByMeetingTime(morningMeetings)) println(s"  ${meeting.time}: ${meeting.name}")
