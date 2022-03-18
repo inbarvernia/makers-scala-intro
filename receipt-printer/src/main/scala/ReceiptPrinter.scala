@@ -1,3 +1,8 @@
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.time.ZoneId
+import java.time.Clock
+
 class CafeDetails (
                     val shopName: String,
                     val address: String,
@@ -5,8 +10,10 @@ class CafeDetails (
                     val prices: Map[String, Double]
                   )
 
-class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map()) {
-
+class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(), val clock: Clock = Clock.systemUTC()) {
+  val instant = Instant.now(clock)
+  val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
+  val formattedInstant = formatter.format(instant)
   /**
    * This method should return a multiline string
    * representing a ReceiptPrinter receipt that should show
@@ -18,7 +25,9 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map())
    * - the total price
    * - the VAT (20% of total price)
    */
+
   def receipt: String = {
-    f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
+    f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
+       |$formattedInstant""".stripMargin
   }
 }
