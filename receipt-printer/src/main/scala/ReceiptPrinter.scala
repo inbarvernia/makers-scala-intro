@@ -19,6 +19,11 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
     for ((item, quantity) <- orderMap) formattedOrderString += f"""$quantity x $item    ${priceList(item)}%2.2f"""
     formattedOrderString
   }
+  val totalPrice = (orderMap: Map[String, Int], cafe: CafeDetails) => {
+    var total: Double = 0.0
+    for ((item, quantity) <- orderMap) total += (cafe.prices(item) * quantity)
+    total
+  }
 
   /**
    * This method should return a multiline string
@@ -35,10 +40,12 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   def receipt: String = {
     println(f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
                |$formattedInstant
-               |${formattedOrder(order, cafe.prices)}""".stripMargin)
+               |${formattedOrder(order, cafe.prices)}
+               |${totalPrice(order, cafe)}%2.2f""".stripMargin)
 
     f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
        |$formattedInstant
-       |${formattedOrder(order, cafe.prices)}""".stripMargin
+       |${formattedOrder(order, cafe.prices)}
+       |${totalPrice(order, cafe)}%2.2f""".stripMargin
   }
 }
