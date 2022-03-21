@@ -14,17 +14,17 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   val instant = Instant.now(clock)
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   val formattedInstant = formatter.format(instant)
-  val formattedOrder = (orderMap: Map[String, Int], priceList: Map[String, Double]) => {
+  private val formattedOrder = (orderMap: Map[String, Int], priceList: Map[String, Double]) => {
     var formattedOrderString = f""""""
     for ((item, quantity) <- orderMap) formattedOrderString += f"""$quantity x $item    ${priceList(item)}%2.2f"""
     formattedOrderString
   }
-  val totalPrice = (orderMap: Map[String, Int], cafe: CafeDetails) => {
+  private val totalPrice = (orderMap: Map[String, Int], cafe: CafeDetails) => {
     var total: Double = 0.0
     for ((item, quantity) <- orderMap) total += (cafe.prices(item) * quantity)
     total
   }
-  val vat = (price: Double) => price * 0.2
+  private val vat = (price: Double) => price * 0.2
 
   /**
    * This method should return a multiline string
