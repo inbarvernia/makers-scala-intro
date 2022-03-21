@@ -59,6 +59,13 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
         )
         printer.receipt should include ("18/03/2022 16:15")
       }
+      "contains an item from the order" in {
+        val printer = new ReceiptPrinter(
+          coffeeConnectionCafe,
+          Map("Cafe Latte" -> 1)
+        )
+        printer.receipt should include ("1 x Cafe Latte")
+      }
     }
   }
 }

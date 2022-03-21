@@ -14,6 +14,12 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   val instant = Instant.now(clock)
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   val formattedInstant = formatter.format(instant)
+  val formattedOrder = (orderMap: Map[String, Int]) => {
+    var formattedOrderString = f""""""
+    for ((item, quantity) <- orderMap) formattedOrderString += f"""$quantity x $item"""
+    formattedOrderString
+  }
+
   /**
    * This method should return a multiline string
    * representing a ReceiptPrinter receipt that should show
@@ -27,7 +33,12 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
    */
 
   def receipt: String = {
+    println(f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
+               |$formattedInstant
+               |${formattedOrder(order)}""".stripMargin)
+
     f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
-       |$formattedInstant""".stripMargin
+       |$formattedInstant
+       |${formattedOrder(order)}""".stripMargin
   }
 }
