@@ -120,9 +120,8 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
                                      |Item                    |Price
                                      |2 x Cafe Latte          |4.75
                                      |1 x Tiramisu            |11.40
-                                     |
                                      |Total: 20.90
-                                     |VAT: 4.18
+                                     |VAT (20%%): 4.18
                                      |Service not included :)""".stripMargin)
       }
     }
