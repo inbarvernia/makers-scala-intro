@@ -21,12 +21,12 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
          |""".stripMargin
     formattedOrderString
   }
-  private val totalPrice = (orderMap: Map[String, Int], cafe: CafeDetails) => {
+  private def totalPrice: Double = {
     var total: Double = 0.0
-    for ((item, quantity) <- orderMap) total += (cafe.prices(item) * quantity)
+    for ((item, quantity) <- order) total += (cafe.prices(item) * quantity)
     total
   }
-  private val vat = (price: Double) => price * 0.2
+  private def vat: Double = totalPrice * 0.2
 
   /**
    * This method should return a multiline string
@@ -45,16 +45,16 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
                |$formattedInstant
                |${"Item"}%-24s|${"Price"}
                |${formattedOrder(order, cafe)}
-               |Total: ${totalPrice(order, cafe)}%2.2f
-               |VAT: ${vat(totalPrice(order, cafe))}%2.2f
+               |Total: $totalPrice%2.2f
+               |VAT: $vat%2.2f
                |Service not included :)""".stripMargin)
 
     f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
        |$formattedInstant
        |${"Item"}%-24s|${"Price"}
        |${formattedOrder(order, cafe)}
-       |Total: ${totalPrice(order, cafe)}%2.2f
-       |VAT: ${vat(totalPrice(order, cafe))}%2.2f
+       |Total: $totalPrice%2.2f
+       |VAT: $vat%2.2f
        |Service not included :)""".stripMargin
   }
 }
