@@ -16,7 +16,9 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   val formattedInstant = formatter.format(instant)
   private val formattedOrder = (orderMap: Map[String, Int], cafe: CafeDetails) => {
     var formattedOrderString = f""""""
-    for ((item, quantity) <- orderMap) formattedOrderString += f"""$quantity x $item    ${cafe.prices(item)}%2.2f"""
+    for ((item, quantity) <- orderMap) formattedOrderString +=
+      f"""${quantity + " x " + item}%-24s|${cafe.prices(item)}%2.2f
+         |""".stripMargin
     formattedOrderString
   }
   private val totalPrice = (orderMap: Map[String, Int], cafe: CafeDetails) => {
@@ -41,14 +43,18 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   def receipt: String = {
     println(f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
                |$formattedInstant
+               |${"Item"}%-24s|${"Price"}
                |${formattedOrder(order, cafe)}
-               |${totalPrice(order, cafe)}%2.2f
-               |VAT: ${vat(totalPrice(order, cafe))}%2.2f""".stripMargin)
+               |Total: ${totalPrice(order, cafe)}%2.2f
+               |VAT: ${vat(totalPrice(order, cafe))}%2.2f
+               |Service not included :)""".stripMargin)
 
     f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
        |$formattedInstant
+       |${"Item"}%-24s|${"Price"}
        |${formattedOrder(order, cafe)}
        |Total: ${totalPrice(order, cafe)}%2.2f
-       |VAT: ${vat(totalPrice(order, cafe))}%2.2f""".stripMargin
+       |VAT: ${vat(totalPrice(order, cafe))}%2.2f
+       |Service not included :)""".stripMargin
   }
 }

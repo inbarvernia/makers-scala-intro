@@ -106,6 +106,25 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
         )
         printer.receipt should include ("4.18")
       }
+      "outputs the correct layout" in {
+        val printer = new ReceiptPrinter(
+          coffeeConnectionCafe,
+          Map(
+            "Cafe Latte" -> 2,
+            "Tiramisu" -> 1
+          ),
+          Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
+        )
+        printer.receipt should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+                                     |18/03/2022 16:15
+                                     |Item                    |Price
+                                     |2 x Cafe Latte          |4.75
+                                     |1 x Tiramisu            |11.40
+                                     |
+                                     |Total: 20.90
+                                     |VAT: 4.18
+                                     |Service not included :)""".stripMargin)
+      }
     }
   }
 }
