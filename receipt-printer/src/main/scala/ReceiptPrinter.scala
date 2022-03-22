@@ -50,17 +50,16 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
 }
 
 class Till(val cafe: CafeDetails) {
-  println(f"""Code:
-             |Menu:
-             |${"Item"}%-25s|${"Price"}
-             |${cafe.prices.map({ case (item, price) => f"$item%-25s|$price%.2f" }).mkString(
+  private val menuHeader: String = f"""Menu:
+                              |${"Item"}%-25s|${"Price"}""".stripMargin
+  private val formatMenuItem = (item: String, price: Double) => f"$item%-25s|$price%.2f"
+  private val formattedMenu = (cafe: CafeDetails) => cafe.prices.map({case (item, price) => formatMenuItem(item, price)}).mkString(
     f"""
-       |""".stripMargin)}""".stripMargin)
+       |""".stripMargin)
   def displayMenu: String = {
-    f"""Menu:
-       |${"Item"}%-25s|${"Price"}
-       |${cafe.prices.map({case (item, price) => f"$item%-25s|$price%.2f"}).mkString(
-      f"""
-         |""".stripMargin)}""".stripMargin
+    println(f"""$menuHeader
+               |${formattedMenu(cafe)}""".stripMargin)
+    f"""$menuHeader
+       |${formattedMenu(cafe)}""".stripMargin
   }
 }
