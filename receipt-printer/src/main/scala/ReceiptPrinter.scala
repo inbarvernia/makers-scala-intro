@@ -11,10 +11,17 @@ class CafeDetails (
                   )
 
 class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(), val clock: Clock = Clock.systemUTC()) {
-  val instant = Instant.now(clock)
+//  val instant = Instant.now(clock)
   val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
-  val formattedInstant = formatter.format(instant)
-  private def formatItem(item: String, quantity: Int) = f"${quantity + " x " + item}%-24s|${cafe.prices(item)}%2.2f"
+//  val formattedInstant = formatter.format(instant)
+  private val formatCafeInfo = (cafe: CafeDetails)  => f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
+  private def formatTime = formatter.format(Instant.now(clock))
+  private def header: String = {
+    f"""${formatCafeInfo(cafe)}
+       |$formatTime
+       |${"Item"}%-24s|${"Price"}""".stripMargin
+  }
+  private def formatItem(item: String, quantity: Int) = f"${quantity + " x " + item}%-24s|${quantity * cafe.prices(item)}%.2f"
   private def formattedOrder: String = {
     order.map({case (item, quantity) => formatItem(item, quantity)}).mkString(
       f"""
@@ -26,6 +33,7 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
     total
   }
   private def vat: Double = totalPrice * 0.2
+  private val footer: String = "Service not included :)"
 
   /**
    * This method should return a multiline string
@@ -40,20 +48,16 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
    */
 
   def receipt: String = {
-    println(f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
-               |$formattedInstant
-               |${"Item"}%-24s|${"Price"}
+    println(f"""$header
                |${formattedOrder}
-               |Total: $totalPrice%2.2f
-               |VAT (20%%): $vat%2.2f
-               |Service not included :)""".stripMargin)
+               |Total: $totalPrice%.2f
+               |VAT (20%%): $vat%.2f
+               |$footer""".stripMargin)
 
-    f"""${cafe.shopName}, ${cafe.address}, ${cafe.phone}
-       |$formattedInstant
-       |${"Item"}%-24s|${"Price"}
+    f"""$header
        |${formattedOrder}
-       |Total: $totalPrice%2.2f
-       |VAT (20%%): $vat%2.2f
-       |Service not included :)""".stripMargin
+       |Total: $totalPrice%.2f
+       |VAT (20%%): $vat%.2f
+       |$footer""".stripMargin
   }
 }
