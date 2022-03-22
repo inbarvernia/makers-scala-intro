@@ -11,39 +11,39 @@ class CafeDetails (
                   )
 
 class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(), val clock: Clock = Clock.systemUTC()) {
-  val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
+  private val timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   private val formatCafeInfo = (cafe: CafeDetails)  => f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
-  private def formatTime = formatter.format(Instant.now(clock))
+  private def formatTime = timeFormatter.format(Instant.now(clock))
   private def header: String = {
     f"""${formatCafeInfo(cafe)}
        |$formatTime
        |${"Item"}%-24s|${"Price"}""".stripMargin
   }
-  private def formatItem(item: String, quantity: Int) = f"${quantity + " x " + item}%-24s|${quantity * cafe.prices(item)}%.2f"
+  private def itemPrice(item: String): Double = cafe.prices(item)
+  private val priceForQuantity = (item: String, quantity: Int) => itemPrice(item) * quantity
+  private val formatItem = (item: String, quantity: Int) => f"${quantity + " x " + item}%-24s|${priceForQuantity(item, quantity)}%.2f"
   private def formattedOrder: String = {
     order.map({case (item, quantity) => formatItem(item, quantity)}).mkString(
       f"""
          |""".stripMargin)
   }
   private def totalPrice: Double = {
-    var total: Double = 0.0
-    for ((item, quantity) <- order) total += (cafe.prices(item) * quantity)
-    total
+    order.map({case (item, quantity) => priceForQuantity(item, quantity)}).fold(0.0)((a, b) => a + b)
   }
   private def vat: Double = totalPrice * 0.2
+  private val formattedTotals = f"""Total: $totalPrice%.2f
+                                |VAT (20%%): $vat%.2f""".stripMargin
   private val footer: String = "Service not included :)"
 
   def receipt: String = {
     println(f"""$header
-               |${formattedOrder}
-               |Total: $totalPrice%.2f
-               |VAT (20%%): $vat%.2f
+               |$formattedOrder
+               |$formattedTotals
                |$footer""".stripMargin)
 
     f"""$header
-       |${formattedOrder}
-       |Total: $totalPrice%.2f
-       |VAT (20%%): $vat%.2f
+       |$formattedOrder
+       |$formattedTotals
        |$footer""".stripMargin
   }
 }
