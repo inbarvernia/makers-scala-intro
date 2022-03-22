@@ -27,6 +27,19 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "Muffin Of The Day" -> 4.55
     )
   )
+    val miniCoffeeConnection = new CafeDetails(
+      "The Coffee Connection",
+      "123 Lakeside Way",
+      "16503600708",
+      Map(
+        "Cafe Latte" -> 4.75,
+        "Single Espresso" -> 2.05,
+        "Double Espresso" -> 3.75,
+        "Blueberry Muffin" -> 4.05,
+        "Chocolate Chip Muffin" -> 4.05,
+        "Muffin Of The Day" -> 4.55
+      )
+  )
 
   "A ReceiptPrinter" should {
     "format a receipt" which {
@@ -123,6 +136,22 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
                                      |Total: 20.90
                                      |VAT (20%%): 4.18
                                      |Service not included :)""".stripMargin)
+      }
+    }
+  }
+  "A Till" should {
+    "show the menu" which {
+      "contains a formatted string of all menu items and prices" in {
+        val till = new Till(miniCoffeeConnection)
+        till.displayMenu should be(
+          f"""Menu:
+             |Item                     |Price
+             |Cafe Latte               |4.75
+             |Single Espresso          |2.05
+             |Double Espresso          |3.75
+             |Blueberry Muffin         |4.05,
+             |Chocolate Chip Muffin    |4.05,
+             |Muffin Of The Day        |4.55""".stripMargin)
       }
     }
   }

@@ -47,3 +47,14 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
        |$footer""".stripMargin
   }
 }
+
+class Till(val cafe: CafeDetails) {
+  println(f"""Menu:
+             |${"Item"}%-25s|${"Price"}
+             |${cafe.prices.map({ case (item, price) => f"$item%-25s|$price%.2f" }).mkString("\n")}""".stripMargin)
+  def displayMenu: String = {
+    f"""Menu:
+       |${"Item"}%-25s|${"Price"}
+       |${cafe.prices.map({case (item, price) => f"$item%-25s|$price%.2f"}).mkString("\n")}""".stripMargin
+  }
+}
