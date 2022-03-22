@@ -3,13 +3,14 @@ import org.scalatest.wordspec.AnyWordSpec
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+import scala.collection.mutable.LinkedHashMap
 
 class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
   val coffeeConnectionCafe = new CafeDetails(
     "The Coffee Connection",
     "123 Lakeside Way",
     "16503600708",
-    Map(
+    LinkedHashMap(
       "Cafe Latte" -> 4.75,
       "Flat White" -> 4.75,
       "Cappuccino" -> 3.85,
@@ -31,7 +32,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "The Coffee Connection",
       "123 Lakeside Way",
       "16503600708",
-      Map(
+      LinkedHashMap(
         "Cafe Latte" -> 4.75,
         "Single Espresso" -> 2.05,
         "Double Espresso" -> 3.75,
@@ -149,8 +150,8 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
              |Cafe Latte               |4.75
              |Single Espresso          |2.05
              |Double Espresso          |3.75
-             |Blueberry Muffin         |4.05,
-             |Chocolate Chip Muffin    |4.05,
+             |Blueberry Muffin         |4.05
+             |Chocolate Chip Muffin    |4.05
              |Muffin Of The Day        |4.55""".stripMargin)
       }
     }

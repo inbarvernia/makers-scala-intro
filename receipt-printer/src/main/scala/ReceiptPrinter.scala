@@ -2,12 +2,13 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.time.Clock
+import scala.collection.mutable.LinkedHashMap
 
 class CafeDetails (
                     val shopName: String,
                     val address: String,
                     val phone: String,
-                    val prices: Map[String, Double]
+                    val prices: LinkedHashMap[String, Double]
                   )
 
 class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(), val clock: Clock = Clock.systemUTC()) {
@@ -49,12 +50,17 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
 }
 
 class Till(val cafe: CafeDetails) {
-  println(f"""Menu:
+  println(f"""Code:
+             |Menu:
              |${"Item"}%-25s|${"Price"}
-             |${cafe.prices.map({ case (item, price) => f"$item%-25s|$price%.2f" }).mkString("\n")}""".stripMargin)
+             |${cafe.prices.map({ case (item, price) => f"$item%-25s|$price%.2f" }).mkString(
+    f"""
+       |""".stripMargin)}""".stripMargin)
   def displayMenu: String = {
     f"""Menu:
        |${"Item"}%-25s|${"Price"}
-       |${cafe.prices.map({case (item, price) => f"$item%-25s|$price%.2f"}).mkString("\n")}""".stripMargin
+       |${cafe.prices.map({case (item, price) => f"$item%-25s|$price%.2f"}).mkString(
+      f"""
+         |""".stripMargin)}""".stripMargin
   }
 }
