@@ -164,6 +164,10 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
 //        till.order should contain only ("Muffin Of The Day" -> 1)
 //        till.order should have size 1
       }
+      "throws an error if item is not on the menu" in {
+        val till = new Till(miniCoffeeConnection)
+        an [Exception] should be thrownBy till.addToOrder("Baked Alaska")
+      }
     }
   }
 }
