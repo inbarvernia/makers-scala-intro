@@ -62,4 +62,9 @@ class Till(val cafe: CafeDetails) {
     f"""$menuHeader
        |${formattedMenu(cafe)}""".stripMargin
   }
+  var order: LinkedHashMap[String, Int] = new LinkedHashMap[String, Int]
+  def addToOrder(item: String) = {
+    order += (item -> 1)
+    println(order)
+  }
 }

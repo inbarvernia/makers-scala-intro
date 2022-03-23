@@ -155,5 +155,15 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
              |Muffin Of The Day        |4.55""".stripMargin)
       }
     }
+    "allow users to add item to order" which {
+      "accepts a menu item and adds it to empty order" in {
+        val till = new Till(miniCoffeeConnection)
+        till.addToOrder("Muffin Of The Day")
+        till.order should contain only ("Muffin Of The Day" -> 1)
+//        Other useful tests for same thing:
+//        till.order should contain only ("Muffin Of The Day" -> 1)
+//        till.order should have size 1
+      }
+    }
   }
 }
