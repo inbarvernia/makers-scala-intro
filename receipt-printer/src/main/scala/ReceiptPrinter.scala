@@ -63,8 +63,9 @@ class Till(val cafe: CafeDetails) {
        |${formattedMenu(cafe)}""".stripMargin
   }
   var order: LinkedHashMap[String, Int] = new LinkedHashMap[String, Int]
+  private def isNotOnMenu(item: String): Boolean = cafe.prices.get(item) == None
   def addToOrder(item: String) = {
-    if (cafe.prices.get(item) == None) throw new NotOnMenuException("Item not in menu")
+    if (isNotOnMenu(item)) throw new NotOnMenuException("Item not in menu")
     order += (item -> 1)
   }
 }
