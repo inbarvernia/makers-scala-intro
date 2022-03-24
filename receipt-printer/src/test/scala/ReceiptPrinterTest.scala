@@ -172,18 +172,18 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
     }
     "finalise order" which {
       "prints out the receipt statement" in {
-        val till = new Till(miniCoffeeConnection)
         val clock = Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
+        val till = new Till(miniCoffeeConnection, clock)
         till.addToOrder("Muffin Of The Day")
         till.addToOrder("Cafe Latte")
         till.finaliseOrder should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
-                                     |18/03/2022 16:15
-                                     |Item                    |Price
-                                     |1 x Muffin of the Day   |4.55
-                                     |1 x Cafe Latte          |4.75
-                                     |Total: 9.30
-                                     |VAT (20%%): 1.86
-                                     |Service not included :)""".stripMargin)
+                                        |18/03/2022 16:15
+                                        |Item                    |Price
+                                        |1 x Muffin of the Day   |4.55
+                                        |1 x Cafe Latte          |4.75
+                                        |Total: 9.30
+                                        |VAT (20%%): 1.86
+                                        |Service not included :)""".stripMargin)
       }
     }
   }

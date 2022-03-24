@@ -9,7 +9,7 @@ class CafeDetails (
                     val shopName: String,
                     val address: String,
                     val phone: String,
-                    val prices: AbstractMap[String, Double]
+                    val prices: LinkedHashMap[String, Double]
                   )
 
 class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] = new LinkedHashMap, val clock: Clock = Clock.systemUTC()) {
@@ -50,7 +50,7 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] 
   }
 }
 
-class Till(val cafe: CafeDetails) {
+class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC()) {
   private val menuHeader: String = f"""Menu:
                               |${"Item"}%-25s|${"Price"}""".stripMargin
   private val formatMenuItem = (item: String, price: Double) => f"$item%-25s|$price%.2f"
@@ -70,9 +70,9 @@ class Till(val cafe: CafeDetails) {
     order += (item -> 1)
   }
   def finaliseOrder: String = {
-    val printer = new ReceiptPrinter(cafe, order)
+    val printer = new ReceiptPrinter(cafe, order, clock)
     println(printer.receipt)
-    printer.receipt
+    f"${printer.receipt}"
   }
 }
 
