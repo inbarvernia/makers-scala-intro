@@ -72,7 +72,7 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC()) {
   def finaliseOrder: String = {
     val printer = new ReceiptPrinter(cafe, order, clock)
     println(printer.receipt)
-    f"${printer.receipt}"
+    printer.receipt
   }
 }
 
