@@ -3,6 +3,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
+//import scala.collection.mutable.LinkedHashMap
 import scala.collection.mutable.LinkedHashMap
 
 class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
@@ -47,28 +48,28 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "contains the name of the cafe" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1)
+          LinkedHashMap("Cafe Latte" -> 1)
         )
         printer.receipt should include ("The Coffee Connection")
       }
       "contains the address of the cafe" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1)
+          LinkedHashMap("Cafe Latte" -> 1)
         )
         printer.receipt should include ("123 Lakeside Way")
       }
       "contains the phone number of the cafe" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1)
+          LinkedHashMap("Cafe Latte" -> 1)
         )
         printer.receipt should include ("16503600708")
       }
       "contains the date and time the receipt was created" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1),
+          LinkedHashMap("Cafe Latte" -> 1),
           Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
         )
         printer.receipt should include ("18/03/2022 16:15")
@@ -76,21 +77,21 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "contains an item from the order" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1)
+          LinkedHashMap("Cafe Latte" -> 1)
         )
         printer.receipt should include ("1 x Cafe Latte")
       }
       "contains the price of an item from the order" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map("Cafe Latte" -> 1)
+          LinkedHashMap("Cafe Latte" -> 1)
         )
         printer.receipt should include ("4.75")
       }
       "contains multiple items and prices from order" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map(
+          LinkedHashMap(
             "Cafe Latte" -> 2,
             "Tiramisu" -> 1
           )
@@ -103,7 +104,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "contains total order price" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map(
+          LinkedHashMap(
             "Cafe Latte" -> 2,
             "Tiramisu" -> 1
           )
@@ -113,7 +114,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "contains VAT on the order" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map(
+          LinkedHashMap(
             "Cafe Latte" -> 2,
             "Tiramisu" -> 1
           )
@@ -123,7 +124,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "outputs the correct layout" in {
         val printer = new ReceiptPrinter(
           coffeeConnectionCafe,
-          Map(
+          LinkedHashMap(
             "Cafe Latte" -> 2,
             "Tiramisu" -> 1
           ),
@@ -155,7 +156,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
              |Muffin Of The Day        |4.55""".stripMargin)
       }
     }
-    "allow users to add item to order" which {
+    "add item to order" which {
       "accepts a menu item and adds it to empty order" in {
         val till = new Till(miniCoffeeConnection)
         till.addToOrder("Muffin Of The Day")
@@ -167,6 +168,22 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
       "throws an error if item is not on the menu" in {
         val till = new Till(miniCoffeeConnection)
         an [Exception] should be thrownBy till.addToOrder("Baked Alaska")
+      }
+    }
+    "finalise order" which {
+      "prints out the receipt statement" in {
+        val till = new Till(miniCoffeeConnection)
+        val clock = Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
+        till.addToOrder("Muffin Of The Day")
+        till.addToOrder("Cafe Latte")
+        till.finaliseOrder should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+                                     |18/03/2022 16:15
+                                     |Item                    |Price
+                                     |1 x Muffin of the Day   |4.55
+                                     |1 x Cafe Latte          |4.75
+                                     |Total: 9.30
+                                     |VAT (20%%): 1.86
+                                     |Service not included :)""".stripMargin)
       }
     }
   }

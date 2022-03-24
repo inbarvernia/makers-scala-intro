@@ -2,16 +2,17 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.time.Clock
+import scala.collection.mutable.AbstractMap
 import scala.collection.mutable.LinkedHashMap
 
 class CafeDetails (
                     val shopName: String,
                     val address: String,
                     val phone: String,
-                    val prices: LinkedHashMap[String, Double]
+                    val prices: AbstractMap[String, Double]
                   )
 
-class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(), val clock: Clock = Clock.systemUTC()) {
+class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] = new LinkedHashMap, val clock: Clock = Clock.systemUTC()) {
   private val timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   private val formatCafeInfo = (cafe: CafeDetails)  => f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
   private def formatTime = timeFormatter.format(Instant.now(clock))
@@ -37,10 +38,10 @@ class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = Map(),
   private val footer: String = "Service not included :)"
 
   def receipt: String = {
-    println(f"""$header
-               |$formattedOrder
-               |$formattedTotals
-               |$footer""".stripMargin)
+//    println(f"""$header
+//               |$formattedOrder
+//               |$formattedTotals
+//               |$footer""".stripMargin)
 
     f"""$header
        |$formattedOrder
@@ -57,8 +58,8 @@ class Till(val cafe: CafeDetails) {
     f"""
        |""".stripMargin)
   def displayMenu: String = {
-    println(f"""$menuHeader
-               |${formattedMenu(cafe)}""".stripMargin)
+//    println(f"""$menuHeader
+//               |${formattedMenu(cafe)}""".stripMargin)
     f"""$menuHeader
        |${formattedMenu(cafe)}""".stripMargin
   }
@@ -67,6 +68,11 @@ class Till(val cafe: CafeDetails) {
   def addToOrder(item: String) = {
     if (isNotOnMenu(item)) throw new NotOnMenuException("Item not in menu")
     order += (item -> 1)
+  }
+  def finaliseOrder: String = {
+    val printer = new ReceiptPrinter(cafe, order)
+    println(printer.receipt)
+    printer.receipt
   }
 }
 
