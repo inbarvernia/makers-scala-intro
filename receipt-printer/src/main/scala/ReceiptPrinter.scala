@@ -12,21 +12,21 @@ class CafeDetails (
                     val prices: LinkedHashMap[String, Double]
                   )
 
-//trait ReceiptPrinterBase {
-//  def receipt: String
-//}
-
 trait ReceiptPrinterFactoryBase {
-  def create(cafe: CafeDetails, order: AbstractMap[String, Int] = new LinkedHashMap, clock: Clock = Clock.systemUTC()): ReceiptPrinter
+  def create(cafe: CafeDetails, order: AbstractMap[String, Int], clock: Clock): ReceiptPrinterBase
 }
 
 object ReceiptPrinterFactory extends ReceiptPrinterFactoryBase {
-  def create(cafe: CafeDetails, order: AbstractMap[String, Int] = new LinkedHashMap, clock: Clock = Clock.systemUTC()): ReceiptPrinter = {
+  def create(cafe: CafeDetails, order: AbstractMap[String, Int], clock: Clock): ReceiptPrinterBase = {
     return new ReceiptPrinter(cafe, order, clock)
   }
 }
 
-class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] = new LinkedHashMap, val clock: Clock = Clock.systemUTC()) {
+trait ReceiptPrinterBase {
+  def receipt: String
+}
+
+class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] = new LinkedHashMap, val clock: Clock = Clock.systemUTC()) extends ReceiptPrinterBase {
   private val timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   private val formatCafeInfo = (cafe: CafeDetails)  => f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
   private def formatTime = timeFormatter.format(Instant.now(clock))
@@ -85,7 +85,7 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
   }
   def finaliseOrder: String = {
     val printer = printerFactory.create(cafe, order, clock)
-    println(printer.receipt)
+//    println(printer.receipt)
     printer.receipt
   }
 }

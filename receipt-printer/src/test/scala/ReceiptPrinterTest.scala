@@ -1,12 +1,12 @@
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import org.scalamock.scalatest.MockFactory
 import java.time.Clock
 import java.time.Instant
 import java.time.ZoneId
-//import scala.collection.mutable.LinkedHashMap
 import scala.collection.mutable.LinkedHashMap
 
-class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
+class ReceiptPrinterSpec extends AnyWordSpec with Matchers with MockFactory {
   val coffeeConnectionCafe = new CafeDetails(
     "The Coffee Connection",
     "123 Lakeside Way",
@@ -172,19 +172,37 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers {
     }
     "finalise order" which {
       "prints out the receipt statement" in {
-        val clock = Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
-        val till = new Till(miniCoffeeConnection, clock)
+        val stoppedClock = Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
+        val mockPrinterFactory = mock[ReceiptPrinterFactoryBase]
+        val mockPrinter = mock[ReceiptPrinterBase]
+        val till = new Till(miniCoffeeConnection, stoppedClock, mockPrinterFactory)
         till.addToOrder("Muffin Of The Day")
         till.addToOrder("Cafe Latte")
-        println((f"""Test version:
-                    |The Coffee Connection, 123 Lakeside Way, 16503600708
-                    |18/03/2022 16:15
-                    |Item                    |Price
-                    |1 x Muffin of the Day   |4.55
-                    |1 x Cafe Latte          |4.75
-                    |Total: 9.30
-                    |VAT (20%%): 1.86
-                    |Service not included :)""".stripMargin))
+
+                (mockPrinterFactory.create(_,_,_)).expects(till.cafe, till.order, stoppedClock).returning(mockPrinter).once()
+                (mockPrinter.receipt _).expects().returning(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+                                                                 |18/03/2022 16:15
+                                                                 |Item                    |Price
+                                                                 |1 x Muffin Of The Day   |4.55
+                                                                 |1 x Cafe Latte          |4.75
+                                                                 |Total: 9.30
+                                                                 |VAT (20%%): 1.86
+                                                                 |Service not included :)""".stripMargin).anyNumberOfTimes() // Added .anyNumberOfTimes due to using println for visibility, .once would be more accurate
+//        (() => mockPrinterFactory.create(_,_,_))
+//          .stubs(till.cafe, till.order, stoppedClock)
+//          .returning(mockPrinter)
+//          .once()
+//        (() => mockPrinter.receipt)
+//          .stubs()
+//          .returning(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+//                        |18/03/2022 16:15
+//                        |Item                    |Price
+//                        |1 x Muffin Of The Day   |4.55
+//                        |1 x Cafe Latte          |4.75
+//                        |Total: 9.30
+//                        |VAT (20%%): 1.86
+//                        |Service not included :)""".stripMargin)
+//          .once()
         till.finaliseOrder should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
                                         |18/03/2022 16:15
                                         |Item                    |Price
