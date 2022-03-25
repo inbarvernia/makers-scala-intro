@@ -130,14 +130,15 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers with MockFactory {
           ),
           Clock.fixed(Instant.parse("2022-03-18T16:15:00.00Z"), ZoneId.systemDefault())
         )
-        printer.receipt should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
-                                     |18/03/2022 16:15
-                                     |Item                    |Price
-                                     |2 x Cafe Latte          |9.50
-                                     |1 x Tiramisu            |11.40
-                                     |Total: 20.90
-                                     |VAT (20%%): 4.18
-                                     |Service not included :)""".stripMargin)
+        printer.receipt should be(
+          f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+             |18/03/2022 16:15
+             |Item                    |Price
+             |2 x Cafe Latte          |9.50
+             |1 x Tiramisu            |11.40
+             |Total: 20.90
+             |VAT (20%%): 4.18
+             |Service not included :)""".stripMargin)
       }
     }
   }
@@ -185,23 +186,26 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers with MockFactory {
         till.addToOrder("Muffin Of The Day")
         till.addToOrder("Cafe Latte")
 
-                (mockPrinterFactory.create(_,_,_)).expects(till.cafe, till.order, stoppedClock).returning(mockPrinter).once()
-                (mockPrinter.receipt _).expects().returning(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
-                                                                 |18/03/2022 16:15
-                                                                 |Item                    |Price
-                                                                 |1 x Muffin Of The Day   |4.55
-                                                                 |1 x Cafe Latte          |4.75
-                                                                 |Total: 9.30
-                                                                 |VAT (20%%): 1.86
-                                                                 |Service not included :)""".stripMargin).anyNumberOfTimes() // Added .anyNumberOfTimes due to using println for visibility, .once would be more accurate
-        till.finaliseOrder should be(f"""The Coffee Connection, 123 Lakeside Way, 16503600708
-                                        |18/03/2022 16:15
-                                        |Item                    |Price
-                                        |1 x Muffin Of The Day   |4.55
-                                        |1 x Cafe Latte          |4.75
-                                        |Total: 9.30
-                                        |VAT (20%%): 1.86
-                                        |Service not included :)""".stripMargin)
+        (mockPrinterFactory.create(_, _, _)).expects(till.cafe, till.order, stoppedClock).returning(mockPrinter).once()
+        (mockPrinter.receipt _).expects().returning(
+          f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+             |18/03/2022 16:15
+             |Item                    |Price
+             |1 x Muffin Of The Day   |4.55
+             |1 x Cafe Latte          |4.75
+             |Total: 9.30
+             |VAT (20%%): 1.86
+             |Service not included :)""".stripMargin).anyNumberOfTimes() // Added .anyNumberOfTimes due to using println for visibility, .once would be more accurate
+
+        till.finaliseOrder should be(
+          f"""The Coffee Connection, 123 Lakeside Way, 16503600708
+             |18/03/2022 16:15
+             |Item                    |Price
+             |1 x Muffin Of The Day   |4.55
+             |1 x Cafe Latte          |4.75
+             |Total: 9.30
+             |VAT (20%%): 1.86
+             |Service not included :)""".stripMargin)
       }
     }
   }
