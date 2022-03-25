@@ -165,6 +165,12 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers with MockFactory {
 //        till.order should contain only ("Muffin Of The Day" -> 1)
 //        till.order should have size 1
       }
+      "increments an item if it's already on the order" in {
+        val till = new Till(miniCoffeeConnection)
+        till.addToOrder("Muffin Of The Day")
+        till.addToOrder("Muffin Of The Day")
+        till.order should contain only ("Muffin Of The Day" -> 2)
+      }
       "throws an error if item is not on the menu" in {
         val till = new Till(miniCoffeeConnection)
         an [Exception] should be thrownBy till.addToOrder("Baked Alaska")

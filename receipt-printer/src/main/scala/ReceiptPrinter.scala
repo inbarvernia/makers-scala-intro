@@ -79,9 +79,11 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
   }
   var order: LinkedHashMap[String, Int] = new LinkedHashMap[String, Int]
   private def isNotOnMenu(item: String): Boolean = cafe.prices.get(item) == None
+  private val isInOrder = (item: String, order: AbstractMap[String, Int]) => order.get(item) != None
   def addToOrder(item: String) = {
     if (isNotOnMenu(item)) throw new NotOnMenuException("Item not in menu")
-    order += (item -> 1)
+    else if (isInOrder(item, order)) order(item) = order(item) + 1
+    else order += (item -> 1)
   }
   def finaliseOrder: String = {
     val printer = printerFactory.create(cafe, order, clock)
