@@ -2,22 +2,21 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.time.ZoneId
 import java.time.Clock
-import scala.collection.mutable.AbstractMap
-import scala.collection.mutable.LinkedHashMap
+import scala.collection.immutable.ListMap
 
 class CafeDetails (
                     val shopName: String,
                     val address: String,
                     val phone: String,
-                    val prices: LinkedHashMap[String, Double]
+                    val prices: ListMap[String, Double]
                   )
 
 trait ReceiptPrinterFactoryBase {
-  def create(cafe: CafeDetails, order: AbstractMap[String, Int], clock: Clock): ReceiptPrinterBase
+  def create(cafe: CafeDetails, order: Map[String, Int], clock: Clock): ReceiptPrinterBase
 }
 
 object ReceiptPrinterFactory extends ReceiptPrinterFactoryBase {
-  def create(cafe: CafeDetails, order: AbstractMap[String, Int], clock: Clock): ReceiptPrinterBase = {
+  def create(cafe: CafeDetails, order: Map[String, Int], clock: Clock): ReceiptPrinterBase = {
     return new ReceiptPrinter(cafe, order, clock)
   }
 }
@@ -26,7 +25,7 @@ trait ReceiptPrinterBase {
   def receipt: String
 }
 
-class ReceiptPrinter(val cafe: CafeDetails, var order: AbstractMap[String, Int] = new LinkedHashMap, val clock: Clock = Clock.systemUTC()) extends ReceiptPrinterBase {
+class ReceiptPrinter(val cafe: CafeDetails, var order: Map[String, Int] = new ListMap, val clock: Clock = Clock.systemUTC()) extends ReceiptPrinterBase {
   private val timeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm").withZone(ZoneId.systemDefault)
   private val formatCafeInfo = (cafe: CafeDetails)  => f"${cafe.shopName}, ${cafe.address}, ${cafe.phone}"
   private def formatTime = timeFormatter.format(Instant.now(clock))
@@ -77,13 +76,12 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
     f"""$menuHeader
        |${formattedMenu(cafe)}""".stripMargin
   }
-  var order: LinkedHashMap[String, Int] = new LinkedHashMap[String, Int]
-  private def isNotOnMenu(item: String): Boolean = cafe.prices.get(item) == None
-  private val isInOrder = (item: String, order: AbstractMap[String, Int]) => order.get(item) != None
+  var order: ListMap[String, Int] = new ListMap[String, Int]
+  private val isInMap = (item: String, mapObject: Map[String, AnyVal]) => mapObject.contains(item)
   def addToOrder(item: String) = {
-    if (isNotOnMenu(item)) throw new NotOnMenuException("Item not in menu")
-    else if (isInOrder(item, order)) order(item) = order(item) + 1
-    else order += (item -> 1)
+    if (!isInMap(item, cafe.prices)) throw new NotOnMenuException("Item not in menu")
+    else if (isInMap(item, order)) order = order.updated(item, order(item) + 1)
+    else order = order + (item -> 1)
   }
   def finaliseOrder: String = {
     val printer = printerFactory.create(cafe, order, clock)
