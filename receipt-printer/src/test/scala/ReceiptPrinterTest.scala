@@ -175,6 +175,7 @@ class ReceiptPrinterSpec extends AnyWordSpec with Matchers with MockFactory {
       "throws an error if item is not on the menu" in {
         val till = new Till(miniCoffeeConnection)
         an [Exception] should be thrownBy till.addToOrder("Baked Alaska")
+        the [Exception] thrownBy till.addToOrder("Baked Alaska") should have message("Item not in menu")
       }
     }
     "finalise order" which {

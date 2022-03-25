@@ -79,7 +79,7 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
   var order: ListMap[String, Int] = new ListMap[String, Int]
   private val isInMap = (item: String, mapObject: Map[String, AnyVal]) => mapObject.contains(item)
   def addToOrder(item: String) = {
-    if (!isInMap(item, cafe.prices)) throw new NotOnMenuException("Item not in menu")
+    if (!isInMap(item, cafe.prices)) throw new RuntimeException("Item not in menu")
     else if (isInMap(item, order)) order = order.updated(item, order(item) + 1)
     else order = order + (item -> 1)
   }
@@ -89,5 +89,3 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
     printer.receipt
   }
 }
-
-class NotOnMenuException(info: String) extends Exception(info) {}
