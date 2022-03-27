@@ -77,10 +77,9 @@ class Till(val cafe: CafeDetails, val clock: Clock = Clock.systemUTC(), val prin
        |${formattedMenu(cafe)}""".stripMargin
   }
   var order: ListMap[String, Int] = new ListMap[String, Int]
-  private val isInMap = (item: String, mapObject: Map[String, AnyVal]) => mapObject.contains(item)
   def addToOrder(item: String) = {
-    if (!isInMap(item, cafe.prices)) throw new RuntimeException("Item not in menu")
-    else if (isInMap(item, order)) order = order.updated(item, order(item) + 1)
+    if (!cafe.prices.contains(item)) throw new RuntimeException("Item not in menu")
+    else if (order.contains(item)) order = order.updated(item, order(item) + 1)
     else order = order + (item -> 1)
   }
   def finaliseOrder: String = {
