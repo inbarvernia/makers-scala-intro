@@ -6,7 +6,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import java.time.LocalDate
 
 class AccountSpec extends AnyWordSpec with Matchers {
-  val Day1: LocalDate = LocalDate.EPOCH
+  val Day1: LocalDate = LocalDate.parse("2022-03-25")//.EPOCH
   val Day2: LocalDate = Day1.plusDays(1)
 
   "A Bank Account" should {
